@@ -33,6 +33,12 @@ class UserModel {
     return await User.deleteOne({ username });
   }
 
+  static async addCoin(id, value) {
+    const user = await User.findOne({ _id: id });
+    user.value += +value;
+    return await user.save();
+  }
+
   static async getCount() {
     return await User.countDocuments({});
   }
