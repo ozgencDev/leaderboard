@@ -7,7 +7,11 @@ exports.getTopUsers = async (req, res) => {
   const id = req.params.id;
   const query = await UserModel.getIdAndValue();
   boardModel.addUsersForLeaderboard(query);
-
+  if (!id) {
+    const leaderboard = await boardModel.getTopUsers(100);
+    res.json(leaderboard);
+    return;
+  }
   const leaderboard = await boardModel.getTopUsers(100);
   const around = await boardModel.getArounds(id);
   const concatted = leaderboard.concat(around);
