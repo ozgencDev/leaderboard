@@ -9,12 +9,31 @@ exports.getTopUsers = async (req, res) => {
   boardModel.addUsersForLeaderboard(query);
   if (!id) {
     const leaderboard = await boardModel.getTopUsers(100);
-    res.json(leaderboard);
+    const arrUsernameAndCountry = await UserModel.getTopUsers(leaderboard);
+    Promise.all(arrUsernameAndCountry).then((arr) => {
+      const result = arr.map((item, index) => {
+        return Object.assign(item, leaderboard[index]);
+      });
+      res.json(result);
+    });
     return;
   }
   const leaderboard = await boardModel.getTopUsers(100);
-  const around = await boardModel.getArounds(id);
-  const concatted = leaderboard.concat(around);
-
-  res.send(concatted);
+  const arrUsernameAndCountry = await UserModel.getTopUsers(leaderboard);
+  Promise.all(arrUsernameAndCountry).then(async (arr) => {
+    const result = arr.map((item, index) => {
+      return Object.assign(item, leaderboard[index]);
+    });
+    const around = await boardModel.getArounds(id);
+    const usernameAndCountry = await UserModel.getTopUsers(around);
+    Promise.all(usernameAndCountry).then((aroundMongo) => {
+      console.log(around);
+      const arrAround = aroundMongo.map((item, index) => {
+        console.log(item);
+        return Object.assign(item, around[index]);
+      });
+      const concat = result.concat(arrAround);
+      res.send(concat);
+    });
+  });
 };
