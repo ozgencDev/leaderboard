@@ -16,11 +16,15 @@ class LeaderBoardModel {
   }
 
   async getArounds(id) {
-    const { rank } = await this.leaderboard.find(id);
-    const threeLess = rank - 3;
-    const twoMore = rank + 2;
-    const around = await this.leaderboard.list(threeLess, twoMore);
-    return around;
+    try {
+      const { rank } = await this.leaderboard.find(id);
+      const threeLess = rank - 3;
+      const twoMore = rank + 2;
+      const around = await this.leaderboard.list(threeLess, twoMore);
+      return around;
+    } catch (e) {
+      console.log("error", "getArounds");
+    }
   }
   async getTopUsers() {
     return await this.leaderboard.top(100);

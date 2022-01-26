@@ -39,13 +39,17 @@ class UserModel {
     return await user.save();
   }
   static async getTopUsers(users) {
-    const arr = users.map(async (user) => {
-      const { country } = await User.findOne({ id: user.id });
-      //console.log({ username, country });
-      return { country };
-    });
+    try {
+      const arr = users.map(async (user) => {
+        const { country } = await User.findOne({ id: user.id });
+        //console.log({ username, country });
+        return { country };
+      });
 
-    return arr;
+      return arr;
+    } catch (e) {
+      console.log("error", "topUsers");
+    }
   }
 
   static async getCount() {
