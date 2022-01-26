@@ -38,6 +38,15 @@ class UserModel {
     user.value += +value;
     return await user.save();
   }
+  static async getTopUsers(users) {
+    const arr = users.map(async (user) => {
+      const { username, country } = await User.findOne({ _id: user.id });
+      //console.log({ username, country });
+      return { username, country };
+    });
+
+    return arr;
+  }
 
   static async getCount() {
     return await User.countDocuments({});
