@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const schema = new mongoose.Schema({
-  username: {
+  id: {
     type: String,
     required: true,
   },
@@ -25,8 +25,8 @@ class UserModel {
     return await User.find({});
   }
 
-  static async getIdAndValue() {
-    return await User.find({}).select("_id value");
+  static async getUserInfo() {
+    return await User.find({}).select("-_id id value country");
   }
 
   static async deleteUser(username) {
@@ -34,15 +34,15 @@ class UserModel {
   }
 
   static async addCoin(id, value) {
-    const user = await User.findOne({ _id: id });
+    const user = await User.findOne({ id: id });
     user.value += +value;
     return await user.save();
   }
   static async getTopUsers(users) {
     const arr = users.map(async (user) => {
-      const { username, country } = await User.findOne({ _id: user.id });
+      const { country } = await User.findOne({ id: user.id });
       //console.log({ username, country });
-      return { username, country };
+      return { country };
     });
 
     return arr;
