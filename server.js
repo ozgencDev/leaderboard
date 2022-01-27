@@ -6,7 +6,7 @@ const playRouter = require("./router/play.route");
 const cors = require("cors");
 const { task, taskUpdateCache } = require("./utils/cron");
 const app = express();
-
+require("dotenv").config();
 connectMongo();
 connectRedis();
 

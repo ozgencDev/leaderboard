@@ -14,7 +14,6 @@ const task = cron.schedule("* * * * *", async () => {
   const prize15 = await PrizePool.calcPercent(15);
   const prize10 = await PrizePool.calcPercent(10);
   const prize55 = (await PrizePool.calcPercent(55)) / 97;
-  console.log(prize20, Math.ceil(prize15), prize10, Math.ceil(prize55));
   const leaderboard = await axios.get(`http://localhost:3000/api/leaderboard`);
   User.addCoin(await leaderboard.data[0].id, Math.ceil(prize20));
   User.addCoin(await leaderboard.data[1].id, Math.ceil(prize15));
@@ -28,7 +27,6 @@ const task = cron.schedule("* * * * *", async () => {
 
 const taskUpdateCache = cron.schedule("*/2 * * * * *", async () => {
   addUsers();
-  console.log("cache updated");
 });
 
 const addUsers = async () => {
