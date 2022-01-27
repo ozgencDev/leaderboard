@@ -7,10 +7,11 @@ const cors = require("cors");
 const { task, taskUpdateCache } = require("./utils/cron");
 const app = express();
 require("dotenv").config();
+app.use(cors());
+
 connectMongo();
 connectRedis();
 
-app.use(cors());
 app.use("/api", apiRouter);
 app.use("/play", playRouter);
 
