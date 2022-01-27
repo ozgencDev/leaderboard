@@ -1,6 +1,10 @@
 const cron = require("node-cron");
 const axios = require("axios");
 const User = require("../models/user.model");
+
+const LeaderBoardModel = require("../models/board.model");
+const boardModel = new LeaderBoardModel();
+
 const _ = require("lodash");
 
 const PrizePool = require("../models/prize-pool.model");
@@ -22,4 +26,19 @@ const task = cron.schedule("* * * * *", async () => {
   PrizePool.deletePrize();
 });
 
-module.exports = task;
+const taskUpdateCache = cron.schedule("*/2 * * * * *", async () => {
+  addUsers();
+  console.log("cache updated");
+});
+
+const addUsers = async () => {
+  try {
+    const users = await User.getUserInfo();
+    await boardModel.leaderboard.redisClient.flushall();
+    await boardModel.addUsersForLeaderboard(users);
+  } catch (e) {
+    console.log("error", "getUsers mw");
+  }
+};
+
+module.exports = { task, taskUpdateCache };
