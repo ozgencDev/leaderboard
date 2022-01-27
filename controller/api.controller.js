@@ -53,6 +53,12 @@ exports.getTopUsers = async (req, res) => {
           const topUsers = await boardModel.getTopUsers();
           const countryTopUsers = await UserModel.getTopUsers(topUsers);
           const around = await boardModel.getArounds(id); //json
+          if (!around) {
+            res.status(404).json({
+              message: "User not found",
+            });
+            return;
+          }
           const countryAroundUsers = await UserModel.getTopUsers(around);
 
           Promise.all(countryTopUsers)
