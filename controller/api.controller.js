@@ -8,7 +8,6 @@ const boardModel = new LeaderBoardModel();
 const addUsers = async () => {
   try {
     const users = await UserModel.getUserInfo();
-    console.log("users", users);
     await boardModel.addUsersForLeaderboard(users);
   } catch (e) {
     console.log("error", "getUsers mw");
@@ -27,7 +26,6 @@ exports.getTopUsers = async (req, res) => {
 
             res.status(200).json(users);
           } else {
-            console.log("hataaaa");
             addUsers();
             axios
               .get("http://localhost:3000/api/leaderboard")
@@ -36,7 +34,6 @@ exports.getTopUsers = async (req, res) => {
                 return;
               })
               .catch((e) => {
-                console.log("ses");
                 res.end();
                 return;
               });
@@ -82,7 +79,6 @@ exports.getTopUsers = async (req, res) => {
                 });
             });
         } else {
-          console.log("GİRDİ");
           addUsers();
           axios
             .get("http://localhost:3000/api/leaderboard/" + id)
@@ -91,7 +87,6 @@ exports.getTopUsers = async (req, res) => {
               return;
             })
             .catch((e) => {
-              console.log("ses");
               res.end();
               return;
             });
