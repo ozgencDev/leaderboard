@@ -1,49 +1,103 @@
 const UserModel = require("../models/user.model");
 const LeaderBoardModel = require("../models/board.model");
 
+const axios = require("axios");
+
 const boardModel = new LeaderBoardModel();
+
+const addUsers = async () => {
+  try {
+    const users = await UserModel.getUserInfo();
+    console.log("users", users);
+    await boardModel.addUsersForLeaderboard(users);
+  } catch (e) {
+    console.log("error", "getUsers mw");
+  }
+};
 
 exports.getTopUsers = async (req, res) => {
   try {
-    /* specific user */
     const id = req.params.id;
-    const query = await UserModel.getUserInfo();
-    /* adds users */
-    boardModel.addUsersForLeaderboard(query);
     if (!id) {
-      const leaderboard = await boardModel.getTopUsers(100);
-      res.json(leaderboard);
+      boardModel.leaderboard.redisClient.exists(
+        "leaderboard",
+        async (err, reply) => {
+          if (reply === 1) {
+            const users = await boardModel.getTopUsers();
+
+            res.status(200).json(users);
+          } else {
+            console.log("hataaaa");
+            addUsers();
+            axios
+              .get("http://localhost:3000/api/leaderboard")
+              .then((response) => {
+                res.json(response.data);
+                return;
+              })
+              .catch((e) => {
+                console.log("ses");
+                res.end();
+                return;
+              });
+          }
+        }
+      );
       return;
     }
-    /* get top user list */
-    const leaderboard = await boardModel.getTopUsers(100);
-    const countryTopUsers = await UserModel.getTopUsers(leaderboard); //Promise
-    /* get countryAroundUsers */
-    const around = await boardModel.getArounds(id); //json
-    const countryAroundUsers = await UserModel.getTopUsers(around); //Promise
 
-    Promise.all(countryTopUsers)
-      .then((topUsers) => {
-        const arr = leaderboard.map((user, index) => {
-          return Object.assign(user, topUsers[index]);
-        });
-        return arr;
-      })
-      .then((arr) => {
-        Promise.all(countryAroundUsers)
-          .then((aroundUsers) => {
-            const arrAround = aroundUsers.map((user, index) => {
-              return Object.assign(user, around[index]);
+    boardModel.leaderboard.redisClient.exists(
+      "leaderboard",
+      async (err, reply) => {
+        if (err) {
+          throw err;
+        }
+        if (reply) {
+          const topUsers = await boardModel.getTopUsers();
+          const countryTopUsers = await UserModel.getTopUsers(topUsers);
+          const around = await boardModel.getArounds(id); //json
+          const countryAroundUsers = await UserModel.getTopUsers(around);
+
+          Promise.all(countryTopUsers)
+            .then((usersInfoWithCountry) => {
+              const arr = topUsers.map((user, index) => {
+                return Object.assign(user, usersInfoWithCountry[index]);
+              });
+              return arr;
+            })
+            .then((top100WithCountryArr) => {
+              Promise.all(countryAroundUsers)
+                .then((arounUsersInfoWithCountry) => {
+                  const aroundArr = around.map((user, index) => {
+                    return Object.assign(
+                      user,
+                      arounUsersInfoWithCountry[index]
+                    );
+                  });
+                  const resp = top100WithCountryArr.concat(aroundArr);
+                  res.json(resp);
+                })
+                .catch((e) => {
+                  console.log(e);
+                });
             });
-            const resp = arr.concat(arrAround);
-            res.json(resp);
-          })
-          .catch((e) => {
-            res.status(400).json(e);
-            return;
-          });
-      });
-    return;
+        } else {
+          console.log("GİRDİ");
+          addUsers();
+          axios
+            .get("http://localhost:3000/api/leaderboard/" + id)
+            .then((response) => {
+              res.json(response.data);
+              return;
+            })
+            .catch((e) => {
+              console.log("ses");
+              res.end();
+              return;
+            });
+        }
+      }
+    );
   } catch (e) {
     console.log("error", "getTopUsers mw");
   }
