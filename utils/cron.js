@@ -23,7 +23,7 @@ const task = cron.schedule("*/5 * * * *", async () => {
   PrizePool.deletePrize();
 });
 
-const taskUpdateCache = cron.schedule("*/2 * * * * *", async () => {
+const taskUpdateCache = cron.schedule("*/10 * * * * *", async () => {
   addUsers();
 });
 
