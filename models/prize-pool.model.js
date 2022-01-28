@@ -10,10 +10,6 @@ const schema = new mongoose.Schema({
 const PrizePoolModel = mongoose.model("PrizePool", schema);
 
 class PrizePool {
-  static async getPrizePool() {
-    return await PrizePoolModel.findOne({});
-  }
-
   static async addPrize(prize) {
     const prizePool = await PrizePoolModel.findOne({});
     if (!prizePool) {
@@ -24,11 +20,6 @@ class PrizePool {
     }
     prizePool.prize += prize;
     return await prizePool.save();
-  }
-
-  static async getPrize() {
-    const prizePool = await PrizePoolModel.findOne({});
-    return prizePool.prize;
   }
 
   static async calcPercent(value) {

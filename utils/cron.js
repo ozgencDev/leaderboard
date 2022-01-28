@@ -5,6 +5,7 @@ const LeaderBoardModel = require("../models/board.model");
 const boardModel = new LeaderBoardModel();
 const PrizePool = require("../models/prize-pool.model");
 
+/* Dispenses a bounty every 5 seconds */
 const task = cron.schedule("*/5 * * * *", async () => {
   const prize20 = await PrizePool.calcPercent(20);
   const prize15 = await PrizePool.calcPercent(15);
@@ -23,6 +24,7 @@ const task = cron.schedule("*/5 * * * *", async () => {
   PrizePool.deletePrize();
 });
 
+/* Refreshes 1 cache every 10 seconds */
 const taskUpdateCache = cron.schedule("*/10 * * * * *", async () => {
   addUsers();
 });

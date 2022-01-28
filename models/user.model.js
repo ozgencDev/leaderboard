@@ -17,20 +17,8 @@ const schema = new mongoose.Schema({
 const User = mongoose.model("User", schema);
 
 class UserModel {
-  static async getUser(username) {
-    return await User.findOne({ username });
-  }
-
-  static async getUsers() {
-    return await User.find({});
-  }
-
   static async getUserInfo() {
     return await User.find({}).select("-_id id value country");
-  }
-
-  static async deleteUser(username) {
-    return await User.deleteOne({ username });
   }
 
   static async addCoin(id, value) {

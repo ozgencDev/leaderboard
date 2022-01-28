@@ -17,6 +17,7 @@ const addUsers = async () => {
 exports.getTopUsers = async (req, res) => {
   try {
     const id = req.params.id;
+    /* Handles non-id requests and serves redis caching */
     if (!id) {
       boardModel.leaderboard.redisClient.exists(
         "leaderboard",
@@ -42,7 +43,7 @@ exports.getTopUsers = async (req, res) => {
       );
       return;
     }
-
+    /* Doesn't make requests for the first 100 people. It only sends requests for those close to id */
     boardModel.leaderboard.redisClient.exists(
       "leaderboard",
       async (err, reply) => {
@@ -85,6 +86,7 @@ exports.getTopUsers = async (req, res) => {
                 });
             });
         } else {
+          /* If the cache is empty, it fills and re-requests */
           addUsers();
           axios
             .get("http://localhost:3000/api/leaderboard/" + id)
