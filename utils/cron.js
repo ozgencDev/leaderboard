@@ -5,7 +5,7 @@ const LeaderBoardModel = require("../models/board.model");
 const boardModel = new LeaderBoardModel();
 const PrizePool = require("../models/prize-pool.model");
 
-const task = cron.schedule("* * * * *", async () => {
+const task = cron.schedule("*/5 * * * *", async () => {
   const prize20 = await PrizePool.calcPercent(20);
   const prize15 = await PrizePool.calcPercent(15);
   const prize10 = await PrizePool.calcPercent(10);
