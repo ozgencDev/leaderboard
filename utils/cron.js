@@ -29,8 +29,8 @@ const taskUpdateCache = cron.schedule("*/2 * * * * *", async () => {
 
 const addUsers = async () => {
   try {
-    const users = await User.getUserInfo();
     await boardModel.leaderboard.redisClient.flushall();
+    const users = await User.getUserInfo();
     await boardModel.addUsersForLeaderboard(users);
   } catch (e) {
     console.log("error", "getUsers mw");
