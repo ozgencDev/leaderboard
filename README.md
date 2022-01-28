@@ -7,10 +7,18 @@ In addition, if the user wins the score, 2% of this score is added to the prize 
 
 Request to play routes to see distribution in bounty pool. **(axios,jest)**
 
-## Projeyi başlatmak için
+## To start the project
 
 - npm start
 
-## Kullancıların skor kazanması için
+## For users to earn coins
 
 - npm test
+
+Servers deployed on Heroku
+
+Redisdb deployed on Redislabs
+
+MongoDB deployed on MongoDB Atlas
+
+[Link is here <<<<<<](https://panteon-backend.herokuapp.com/)
