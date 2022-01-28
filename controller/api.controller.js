@@ -28,7 +28,7 @@ exports.getTopUsers = async (req, res) => {
           } else {
             addUsers();
             axios
-              .get("http://localhost:3000/api/leaderboard")
+              .get("https://panteon-backend.herokuapp.com/api/leaderboard")
               .then((response) => {
                 res.json(response.data);
                 return;
