@@ -55,11 +55,4 @@ describe("Play game", () => {
 
     expect(response.status).toBe(200);
   });
-  test("1000 coins", async () => {
-    const response = await axios.post(
-      `https://panteon-backend.herokuapp.com/play/add/mspillett3/1000`
-    );
-
-    expect(response.status).toBe(200);
-  });
 });
